@@ -37,12 +37,12 @@ function App() {
 		setProfile(null);
 	};
 
-	// const handleSendMsg = () => {
-	// 	liff.sendMessages([{
-	// 		"type": "text",
-	// 		"text": "Hello, World!"
-	// 	}]);
-	// }
+	const handleSendMsg = () => {
+		liff.sendMessages([{
+			"type": "text",
+			"text": "Hello, World!"
+		}]);
+	}
 
 	if (error) {
 		return <div>Error: {error}</div>;
@@ -54,8 +54,7 @@ function App() {
 			{isLoggedIn ? (
 				<div>
 					<p>Welcome, {profile?.displayName}!</p>
-					{profile}
-					{/* <button onClick={handleSendMsg}>send msg</button> */}
+					<button onClick={handleSendMsg}>send msg</button>
 					<button onClick={handleLogout}>Logout</button>
 					{/* Add more LIFF interactions here */}
 				</div>
