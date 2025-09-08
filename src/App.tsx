@@ -1,51 +1,63 @@
+// src/App.js
 import { useEffect, useState } from 'react';
-import { useLiff } from 'react-liff';
+import liff from '@line/liff';
 
-import './App.css';
+const LIFF_ID = import.meta.env.VITE_REACT_APP_LINE_LIFF_ID; // Replace with your actual LIFF ID
 
-const App = () => {
-	const [displayName, setDisplayName] = useState('');
-	const { error, isLoggedIn, isReady, liff } = useLiff();
-
-	function handleLogin() {
-		return liff.login
-	}
+function App() {
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [profile, setProfile] = useState(null);
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
-		if (!isLoggedIn) return;
+		const initLiff = async () => {
+			try {
+				await liff.init({ liffId: LIFF_ID });
+				setIsLoggedIn(liff.isLoggedIn());
 
-		(async () => {
-			const profile = await liff.getProfile();
-			setDisplayName(profile.displayName);
-		})();
-	}, [liff, isLoggedIn]);
+				if (liff.isLoggedIn()) {
+					const userProfile = await liff.getProfile();
+					setProfile(userProfile);
+				}
+			} catch (e) {
+				setError(e.message);
+			}
+		};
 
-	const showDisplayName = () => {
-		if (error) return <p>Something is wrong.</p>;
-		if (!isReady) return <p>Loading...</p>;
+		initLiff();
+	}, []);
 
-		if (!isLoggedIn) {
-			return (
-				<button className="App-button" onClick={handleLogin}>
-					Login
-				</button>
-			);
-		}
-		return (
-			<>
-				<p>Welcome to the react-liff demo app, {displayName}!</p>
-				<button className="App-button" onClick={liff.logout}>
-					Logout
-				</button>
-			</>
-		);
+	const handleLogin = () => {
+		liff.login();
 	};
+
+	const handleLogout = () => {
+		liff.logout();
+		setIsLoggedIn(false);
+		setProfile(null);
+	};
+
+	if (error) {
+		return <div>Error: {error}</div>;
+	}
 
 	return (
 		<div className="App">
-			<header className="App-header">{showDisplayName()}</header>
+			<h1>LIFF React Example</h1>
+			{isLoggedIn ? (
+				<div>
+					<p>Welcome, {profile?.displayName}!</p>
+					<button onClick={handleLogout}>Logout</button>
+					{/* Add more LIFF interactions here */}
+				</div>
+			) : (
+				<div>
+					<p>Please log in to use the LIFF app.</p>
+					<button onClick={handleLogin} style={{ backgroundColor: "#ffffff" }}>Login with LINE</button>
+				</div>
+			)}
 		</div>
 	);
-};
+}
 
 export default App;
