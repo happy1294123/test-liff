@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLiff } from 'react-liff';
 
 import './App.css';
@@ -6,6 +6,10 @@ import './App.css';
 const App = () => {
 	const [displayName, setDisplayName] = useState('');
 	const { error, isLoggedIn, isReady, liff } = useLiff();
+
+	function handleLogin() {
+		return liff.login
+	}
 
 	useEffect(() => {
 		if (!isLoggedIn) return;
@@ -22,7 +26,7 @@ const App = () => {
 
 		if (!isLoggedIn) {
 			return (
-				<button className="App-button" onClick={liff.login}>
+				<button className="App-button" onClick={handleLogin}>
 					Login
 				</button>
 			);
