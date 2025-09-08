@@ -6,7 +6,7 @@ const LIFF_ID = import.meta.env.VITE_REACT_APP_LINE_LIFF_ID; // Replace with you
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [profile, setProfile] = useState(null);
+	const [profile, setProfile] = useState<any>(null);
 	const [error, setError] = useState(null);
 
 	useEffect(() => {
@@ -16,10 +16,10 @@ function App() {
 				setIsLoggedIn(liff.isLoggedIn());
 
 				if (liff.isLoggedIn()) {
-					const userProfile = await liff.getProfile();
+					const userProfile: any = await liff.getProfile();
 					setProfile(userProfile);
 				}
-			} catch (e) {
+			} catch (e: any) {
 				setError(e.message);
 			}
 		};
