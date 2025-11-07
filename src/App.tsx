@@ -59,11 +59,17 @@ function App() {
 					{/* Add more LIFF interactions here */}
 				</div>
 			) : (
-				<div>
-					<p>Please log in to use the LIFF app.</p>
-					<button onClick={handleLogin} style={{ backgroundColor: "#ffffff" }}>Login with LINE</button>
-				</div>
+				<>
+					<div>
+						<p>Please log in to use the LIFF app.</p>
+						<button onClick={handleLogin} style={{ backgroundColor: "#ffffff" }}>Login with LINE</button>
+					</div>
+					<div>
+						<a href="https://31a90c78cd4b.ngrok-free.app/hldE4O5B8gGY.pkpass">test link</a>
+					</div>
+				</>
 			)}
+
 		</div>
 	);
 }
