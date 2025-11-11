@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import liff from '@line/liff';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ticketImgUrl from '../public/ticket_example.png'
-// import FileLoader from './FileLoader';
 
 const LIFF_ID = import.meta.env.VITE_REACT_APP_LINE_LIFF_ID; // Replace with your actual LIFF ID
 
@@ -55,9 +54,9 @@ function App() {
 		height: "80px",
 		marginTop: '20px',
 		padding: '10px',
-		position: 'relative',
+		position: 'fixed',
 		borderRadius: '10px'
-	}
+	} as React.CSSProperties
 
 	const handleBuy = () => {
 		setHasBuyTicket(true)
