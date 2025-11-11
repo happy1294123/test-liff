@@ -1,6 +1,9 @@
 // src/App.js
 import { useEffect, useState } from 'react';
 import liff from '@line/liff';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import ticketImgUrl from '../public/ticket_example.png'
+// import FileLoader from './FileLoader';
 
 const LIFF_ID = import.meta.env.VITE_REACT_APP_LINE_LIFF_ID; // Replace with your actual LIFF ID
 
@@ -8,6 +11,8 @@ function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [profile, setProfile] = useState<any>(null);
 	const [error, setError] = useState(null);
+	const [hasBuyTicket, setHasBuyTicket] = useState(true)
+
 
 	useEffect(() => {
 		const initLiff = async () => {
@@ -44,13 +49,42 @@ function App() {
 		}]);
 	}
 
+	const TicketStyle = {
+		backgroundColor: "#ffffff",
+		color: "black",
+		height: "80px",
+		marginTop: '20px',
+		padding: '10px',
+		position: 'relative',
+		borderRadius: '10px'
+	}
+
+	const handleBuy = () => {
+		setHasBuyTicket(true)
+		alert('票卷購買成功')
+	}
+
+	const handleConvertToApplePass = async () => {
+		console.log('handleConvertToApplePass', ticketImgUrl)
+		const imgResponse = await fetch(ticketImgUrl);
+		const blob = await imgResponse.blob()
+		const formData = new FormData();
+		const file = new File([blob], 'ticket.png', { type: 'image/png' })
+		formData.append('file', file)
+
+		await fetch('https://suppler-oma-anonymously.ngrok-free.dev/webhook-test/c0f32a0f-d400-4c5f-9f3e-607228ecd4ff', {
+			method: 'POST',
+			body: formData
+		})
+	}
+
 	if (error) {
 		return <div>Error: {error}</div>;
 	}
 
-	return (
-		<div className="App">
-			<h1>LIFF React Example</h1>
+	const Home = () => {
+		return <div className="App">
+			<h1>Home</h1>
 			{isLoggedIn ? (
 				<div>
 					<p>Welcome, {profile?.displayName}!</p>
@@ -61,16 +95,60 @@ function App() {
 			) : (
 				<>
 					<div>
-						<p>Please log in to use the LIFF app.</p>
+						{/* <p>Please log in to use the LIFF app.</p> */}
 						<button onClick={handleLogin} style={{ backgroundColor: "#ffffff" }}>Login with LINE</button>
+
 					</div>
 					<div>
-						<a href="https://31a90c78cd4b.ngrok-free.app/hldE4O5B8gGY.pkpass">test link</a>
+						{/* <FileLoader /> */}
+						{/* <input type="file" onChange={handleFileChange} /> */}
+						{/* <a href="https://31a90c78cd4b.ngrok-free.app/hldE4O5B8gGY.pkpass">test link</a> */}
+
 					</div>
 				</>
-			)}
+			)
+			}
+			<div style={TicketStyle}>
+				票卷範例 Ticket Example
+				<a style={{ position: 'absolute', right: '10px', bottom: '5px', cursor: 'pointer' }} onClick={handleBuy}>購買</a>
+			</div >
+		</div >
+	}
 
-		</div>
+	const TicketHolder = () => {
+		return <>
+			<h1>Ticket Holder</h1>
+
+			{hasBuyTicket ?
+				<>
+					<img src="/ticket_example.png" alt="" />
+					<img src="/apple_wallet_example.png" alt="" style={{ width: '100px', top: 0, marginLeft: '10px', cursor: 'pointer' }} onClick={handleConvertToApplePass} />
+				</>
+				:
+				'無票卷'
+			}
+
+
+
+			{/* <h1>ticket_holder</h1> */}
+
+		</>
+	}
+
+
+	return (
+		<BrowserRouter>
+			<div style={{ paddingLeft: '40px' }}>
+				<nav>
+					<Link to="/">home</Link> | {" "}
+					<Link to="/ticket_holder">ticket_holder</Link>
+				</nav>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/ticket_holder" element={<TicketHolder />} />
+				</Routes>
+			</div>
+		</BrowserRouter>
 	);
 }
 
