@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import liff from '@line/liff';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ticketImgUrl from '../public/ticket_example.png'
+import { client } from '@passwordless-id/webauthn'
+import { server } from '@passwordless-id/webauthn'
 
 const LIFF_ID = import.meta.env.VITE_REACT_APP_LINE_LIFF_ID; // Replace with your actual LIFF ID
 
@@ -134,10 +136,34 @@ function App() {
 		</>
 	}
 
+	const triggerRegistration = async () => {
+		const registration = await client.register({
+			user: "user name",
+			challenge: server.randomChallenge(),
+			/* possibly other options */
+		})
+
+		return registration
+	}
+
+	const triggerAuth = async () => {
+		const authentication = await client.authenticate({
+			/* Required */
+			challenge: server.randomChallenge(),
+			/* Optional */
+			// allowCredentials: [{ id: 'my-credential-id', transports: ['internal'] }, ...],
+			timeout: 60000
+		})
+
+		console.log(authentication)
+		return authentication
+	}
+
 
 	return (
 		<BrowserRouter>
 			<div style={{ paddingLeft: '40px' }}>
+				test
 				<nav>
 					<Link to="/">home</Link> | {" "}
 					<Link to="/ticket_holder">ticket_holder</Link>
@@ -146,6 +172,14 @@ function App() {
 					<Route path="/" element={<Home />} />
 					<Route path="/ticket_holder" element={<TicketHolder />} />
 				</Routes>
+			</div>
+
+			<div>
+				<button onClick={triggerRegistration} style={{ backgroundColor: "#ffffff" }}>click</button>
+			</div>
+
+			<div>
+				<button onClick={triggerAuth} style={{ backgroundColor: "#ffffff" }}>click</button>
 			</div>
 		</BrowserRouter>
 	);
